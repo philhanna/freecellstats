@@ -1,0 +1,73 @@
+#! /usr/bin/python3
+
+import sys
+import xml.dom.minidom
+from xml.dom.minidom import parse
+
+def getChildText(node):
+    sb = ""
+    for child in node.childNodes:
+        sb = sb + child.nodeValue
+    return sb
+
+inputFile = "/home/saspeh/.gconf/apps/aisleriot/%gconf.xml"
+dom = xml.dom.minidom.parse(inputFile)
+
+elemGconf = dom.documentElement
+
+elemEntry = None
+nodelist = elemGconf.getElementsByTagName('entry')
+for node in nodelist:
+    if node.getAttribute('name') == 'statistics':
+        elemEntry = node
+if not elemEntry:
+    print("No statistics found")
+    sys.exit()
+
+nodes = elemEntry.getElementsByTagName('stringvalue')
+
+wins    = int(getChildText(nodes[1]))
+total   = int(getChildText(nodes[2]))
+best    = int(getChildText(nodes[3]))
+worst   = int(getChildText(nodes[4]))
+losses  = total - wins
+pct     = wins / total
+
+def percent(wins, losses):
+    return round(100 * wins / (wins + losses))
+
+def secondsToTime(seconds):
+    minutes = seconds // 60
+    seconds = seconds - (60 * minutes)
+    return '{0:02d}:{1:02d}'.format(minutes, seconds)
+
+def winsToNextHigher(wins, losses):
+    current = percent(wins, losses)
+    nextPct = current + 1
+    moves = 0
+    while percent(wins, losses) < nextPct:
+        moves += 1
+        wins += 1
+    return moves
+
+def lossesToNextLower(wins, losses):
+    current = percent(wins, losses)
+    nextPct = current - 1
+    moves = 0
+    while percent(wins, losses) > nextPct:
+        moves += 1
+        losses += 1
+    return moves
+
+print('Wins                 = {0}'.format(wins))
+print('Losses               = {0}'.format(losses))
+print('Percentage           = {0:.0f}%'.format(pct * 100))
+print('Best time            = {0}'.format(secondsToTime(best)))
+print('Worst time           = {0}'.format(secondsToTime(worst)))
+print('Wins to {0:<13s}= {1}'.format(
+                str(percent(wins, losses) + 1) + "%",
+                winsToNextHigher(wins, losses)))
+print('Losses to {0:<11s}= {1}'.format(
+                str(percent(wins, losses) - 1) + "%",
+                lossesToNextLower(wins, losses)))
+
