@@ -1,73 +1,137 @@
 #! /usr/bin/python3
 
+import os
+import os.path
 import sys
 import xml.dom.minidom
 from xml.dom.minidom import parse
 
-def getChildText(node):
-    sb = ""
-    for child in node.childNodes:
-        sb = sb + child.nodeValue
-    return sb
+#   ============================================================
+#   Statistics - class that calculates the wins, loss, and
+#                percentages
+#   ============================================================
+class Statistics:
+    """ Freecell statistics object
+    """
 
-inputFile = "/home/saspeh/.gconf/apps/aisleriot/%gconf.xml"
-dom = xml.dom.minidom.parse(inputFile)
+    @staticmethod
+    def percent(wins, losses):
+        """ Finds the integer value of the winning percentage
+        """
+        return round(100 * wins / (wins + losses))
 
-elemGconf = dom.documentElement
+    @staticmethod
+    def secondsToTime(seconds):
+        """ Converts a number of seconds into a mm:ss string
+        """
+        minutes = seconds // 60
+        seconds = seconds - (60 * minutes)
+        return '{0:02d}:{1:02d}'.format(minutes, seconds)
 
-elemEntry = None
-nodelist = elemGconf.getElementsByTagName('entry')
-for node in nodelist:
-    if node.getAttribute('name') == 'statistics':
-        elemEntry = node
-if not elemEntry:
-    print("No statistics found")
-    sys.exit()
+    def __init__(self, wins=0, total=0, best=0, worst=0):
+        """ Constructor
+        """
+        self.wins   = wins      # Number of wins
+        self.total  = total     # Total games
+        self.best   = best      # Best time (seconds)
+        self.worst  = worst     # Worst time (seconds)
+        self.losses = total - wins  # Number of losses
+        self.pct    = wins / total if total else 0
 
-nodes = elemEntry.getElementsByTagName('stringvalue')
+    def __str__(self):
+        lines = (
+        ('Wins                 = {0}'.format(self.wins)),
+        ('Losses               = {0}'.format(self.losses)),
+        ('Percentage           = {0:.0f}%'.format(self.pct * 100)),
+        ('Best time            = {0}'.format(Statistics.secondsToTime(self.best))),
+        ('Worst time           = {0}'.format(Statistics.secondsToTime(self.worst))),
+        ('Wins to {0:<13s}= {1}'.format(
+                        str(Statistics.percent(self.wins, self.losses) + 1) + "%",
+                        self.winsToNextHigher())),
+        ('Losses to {0:<11s}= {1}'.format(
+                        str(Statistics.percent(self.wins, self.losses) - 1) + "%",
+                        self.lossesToNextLower())),
+        )
+        return '\n'.join(lines)
 
-wins    = int(getChildText(nodes[1]))
-total   = int(getChildText(nodes[2]))
-best    = int(getChildText(nodes[3]))
-worst   = int(getChildText(nodes[4]))
-losses  = total - wins
-pct     = wins / total
+    def winsToNextHigher(self):
+        wins = self.wins
+        losses = self.losses
+        current = Statistics.percent(wins, losses)
+        nextPct = current + 1
+        moves = 0
+        while Statistics.percent(wins, losses) < nextPct:
+            moves += 1
+            wins += 1
+        return moves
 
-def percent(wins, losses):
-    return round(100 * wins / (wins + losses))
+    def lossesToNextLower(self):
+        wins = self.wins
+        losses = self.losses
+        current = Statistics.percent(wins, losses)
+        nextPct = current - 1
+        moves = 0
+        while Statistics.percent(wins, losses) > nextPct:
+            moves += 1
+            losses += 1
+        return moves
 
-def secondsToTime(seconds):
-    minutes = seconds // 60
-    seconds = seconds - (60 * minutes)
-    return '{0:02d}:{1:02d}'.format(minutes, seconds)
+#   ============================================================
+#   FileReader - class to read the raw data from the XML file
+#                that contains the history
+#   ============================================================
+class FileReader:
 
-def winsToNextHigher(wins, losses):
-    current = percent(wins, losses)
-    nextPct = current + 1
-    moves = 0
-    while percent(wins, losses) < nextPct:
-        moves += 1
-        wins += 1
-    return moves
+    INPUT_FILE = os.path.expanduser('~/.gconf/apps/aisleriot/%gconf.xml')
 
-def lossesToNextLower(wins, losses):
-    current = percent(wins, losses)
-    nextPct = current - 1
-    moves = 0
-    while percent(wins, losses) > nextPct:
-        moves += 1
-        losses += 1
-    return moves
+    @staticmethod
+    def getChildText(node):
+        """ Returns the concatenated text of all child nodes
+        """
+        sb = ""
+        for child in node.childNodes:
+            sb = sb + child.nodeValue
+        return sb
 
-print('Wins                 = {0}'.format(wins))
-print('Losses               = {0}'.format(losses))
-print('Percentage           = {0:.0f}%'.format(pct * 100))
-print('Best time            = {0}'.format(secondsToTime(best)))
-print('Worst time           = {0}'.format(secondsToTime(worst)))
-print('Wins to {0:<13s}= {1}'.format(
-                str(percent(wins, losses) + 1) + "%",
-                winsToNextHigher(wins, losses)))
-print('Losses to {0:<11s}= {1}'.format(
-                str(percent(wins, losses) - 1) + "%",
-                lossesToNextLower(wins, losses)))
+    def __init__(self):
+        """ Constructor
+        """
+        inputFile = FileReader.INPUT_FILE
+        if not os.path.exists(inputFile):
+            print("{0} input file does not exist".format(inputFile))
+            sys.exit()
 
+        dom = xml.dom.minidom.parse(inputFile)
+        elemGconf = dom.documentElement
+        elemEntry = None
+        nodelist = elemGconf.getElementsByTagName('entry')
+        for node in nodelist:
+            if node.getAttribute('name') == 'statistics':
+                elemEntry = node
+        if not elemEntry:
+            print("No statistics found")
+            sys.exit()
+
+        #   Get the wins, total, best time, and worst time
+
+        nodes = elemEntry.getElementsByTagName('stringvalue')
+
+        wins    = int(FileReader.getChildText(nodes[1]))
+        total   = int(FileReader.getChildText(nodes[2]))
+        best    = int(FileReader.getChildText(nodes[3]))
+        worst   = int(FileReader.getChildText(nodes[4]))
+
+        #   Create the statistics object
+
+        self.stats = Statistics(wins, total, best, worst)
+
+    def __str__(self):
+        return str(self.stats)
+
+#   ============================================================
+#   Mainline
+#   ============================================================
+
+if __name__ == "__main__":
+    app = FileReader()
+    print(app)
