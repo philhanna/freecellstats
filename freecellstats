@@ -40,6 +40,7 @@ class Statistics:
 
     def __str__(self):
         lines = (
+        ('Total games          = {0}'.format(self.total)),
         ('Wins                 = {0}'.format(self.wins)),
         ('Losses               = {0}'.format(self.losses)),
         ('Percentage           = {0:.0f}%'.format(self.pct * 100)),
