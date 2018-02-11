@@ -6,31 +6,31 @@ import sys
 import xml.dom.minidom
 from xml.dom.minidom import parse
 
-#   ============================================================
-#   Statistics - class that calculates the wins, loss, and
-#                percentages
-#   ============================================================
 class Statistics:
-    """ Freecell statistics object
-    """
+    '''
+    Calculates the wins, losses, and percentages
+    '''
 
     @staticmethod
     def percent(wins, losses):
-        """ Finds the integer value of the winning percentage
-        """
+        '''
+        Finds the integer value of the winning percentage
+        '''
         return round(100 * wins / (wins + losses))
 
     @staticmethod
     def secondsToTime(seconds):
-        """ Converts a number of seconds into a mm:ss string
-        """
+        '''
+        Converts a number of seconds into a mm:ss string
+        '''
         minutes = seconds // 60
         seconds = seconds - (60 * minutes)
         return '{0:02d}:{1:02d}'.format(minutes, seconds)
 
     def __init__(self, wins=0, total=0, best=0, worst=0):
-        """ Constructor
-        """
+        '''
+        Constructor
+        '''
         self.wins   = wins      # Number of wins
         self.total  = total     # Total games
         self.best   = best      # Best time (seconds)
@@ -47,10 +47,10 @@ class Statistics:
         ('Best time            = {0}'.format(Statistics.secondsToTime(self.best))),
         ('Worst time           = {0}'.format(Statistics.secondsToTime(self.worst))),
         ('Wins to {0:<13s}= {1}'.format(
-                        str(Statistics.percent(self.wins, self.losses) + 1) + "%",
+                        str(Statistics.percent(self.wins, self.losses) + 1) + '%',
                         self.winsToNextHigher())),
         ('Losses to {0:<11s}= {1}'.format(
-                        str(Statistics.percent(self.wins, self.losses) - 1) + "%",
+                        str(Statistics.percent(self.wins, self.losses) - 1) + '%',
                         self.lossesToNextLower())),
         )
         return '\n'.join(lines)
@@ -77,29 +77,34 @@ class Statistics:
             losses += 1
         return moves
 
-#   ============================================================
-#   FileReader - class to read the raw data from the XML file
-#                that contains the history
-#   ============================================================
+# ======================================================================
+# FileReader - class to read the raw data from the XML file
+#              that contains the history
+# ======================================================================
 class FileReader:
+    '''
+    Reads raw data from the XML file that contains the history
+    '''
 
     INPUT_FILE = os.path.expanduser('~/.gconf/apps/aisleriot/%gconf.xml')
 
     @staticmethod
     def getChildText(node):
-        """ Returns the concatenated text of all child nodes
-        """
-        sb = ""
+        '''
+        Returns the concatenated text of all child nodes
+        '''
+        sb = ''
         for child in node.childNodes:
             sb = sb + child.nodeValue
         return sb
 
     def __init__(self):
-        """ Constructor
-        """
+        '''
+        Constructor
+        '''
         inputFile = FileReader.INPUT_FILE
         if not os.path.exists(inputFile):
-            print("{0} input file does not exist".format(inputFile))
+            print('{0} input file does not exist'.format(inputFile))
             sys.exit()
 
         dom = xml.dom.minidom.parse(inputFile)
@@ -110,7 +115,7 @@ class FileReader:
             if node.getAttribute('name') == 'statistics':
                 elemEntry = node
         if not elemEntry:
-            print("No statistics found")
+            print('No statistics found')
             sys.exit()
 
         #   Get the wins, total, best time, and worst time
@@ -129,10 +134,11 @@ class FileReader:
     def __str__(self):
         return str(self.stats)
 
-#   ============================================================
-#   Mainline
-#   ============================================================
 
-if __name__ == "__main__":
+# ======================================================================
+# Mainline
+# ======================================================================
+if __name__ == '__main__':
+if __name__ == '__main__':
     app = FileReader()
     print(app)
