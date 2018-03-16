@@ -38,6 +38,13 @@ class Statistics:
         self.losses = total - wins  # Number of losses
         self.pct    = wins / total if total else 0
 
+    def __repr__(self):
+        return "Statistics(wins={},total={},best={},worst={})".format(
+            self.wins,
+            self.total,
+            self.best,
+            self.worst)
+
     def __str__(self):
         lines = (
         ('Total games          = {0}'.format(self.total)),
@@ -56,25 +63,31 @@ class Statistics:
         return '\n'.join(lines)
 
     def winsToNextHigher(self):
+        if self.losses == 0:
+            return None
         wins = self.wins
         losses = self.losses
         current = Statistics.percent(wins, losses)
         nextPct = current + 1
         moves = 0
-        while Statistics.percent(wins, losses) < nextPct:
+        while current < nextPct:
             moves += 1
             wins += 1
+            current = Statistics.percent(wins, losses)
         return moves
 
     def lossesToNextLower(self):
+        if self.wins == 0:
+            return None
         wins = self.wins
         losses = self.losses
         current = Statistics.percent(wins, losses)
         nextPct = current - 1
         moves = 0
-        while Statistics.percent(wins, losses) > nextPct:
+        while current > nextPct:
             moves += 1
             losses += 1
+            current = Statistics.percent(wins, losses)
         return moves
 
 # ======================================================================
