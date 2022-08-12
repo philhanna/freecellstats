@@ -1,15 +1,15 @@
 import os
 import sys
-
+import xml.dom.minidom
 from freecell.statistics import Statistics
 
+INPUT_FILE = os.path.expanduser("~/.config/gnome-games/aisleriot")
 
 class FileReader:
     '''
     Reads raw data from the XML file that contains the history
     '''
 
-    INPUT_FILE = os.path.expanduser('~/.gconf/apps/aisleriot/%gconf.xml')
 
     @staticmethod
     def getChildText(node):
@@ -25,7 +25,7 @@ class FileReader:
         '''
         Constructor
         '''
-        inputFile = FileReader.INPUT_FILE
+        inputFile = INPUT_FILE
         if not os.path.exists(inputFile):
             print('{0} input file does not exist'.format(inputFile))
             sys.exit()
