@@ -1,3 +1,6 @@
 *.swp
-log.txt
-__pycache__/
+*.pyc
+*.pyo
+__pycache__
+.idea/
+venv/
