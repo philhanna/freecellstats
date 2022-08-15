@@ -1,13 +1,13 @@
-import os
-import sys
 import configparser
-from freecell.statistics import Statistics
+import os.path
 
-INPUT_FILE = os.path.expanduser("~/.config/gnome-games/aisleriot")
+from freecell import Statistics
 
 
 class FileReader:
     """ Reads raw data from the configuration file that contains the history """
+
+    INPUT_FILE = os.path.expanduser("~/.config/gnome-games/aisleriot")
 
     def __init__(self, input_file=INPUT_FILE):
         if not os.path.exists(input_file):
@@ -34,3 +34,4 @@ class FileReader:
 
     def __str__(self):
         return str(self.stats)
+

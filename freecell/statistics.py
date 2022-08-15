@@ -1,34 +1,26 @@
 class Statistics:
-    '''
-    Calculates the wins, losses, and percentages
-    '''
+    """ Calculates the wins, losses, and percentages """
 
     @staticmethod
     def percent(wins, losses):
-        '''
-        Finds the integer value of the winning percentage
-        '''
+        """ Finds the integer value of the winning percentage """
         return round(100 * wins / (wins + losses))
 
     @staticmethod
-    def secondsToTime(seconds):
-        '''
-        Converts a number of seconds into a mm:ss string
-        '''
+    def seconds_to_time(seconds):
+        """ Converts a number of seconds into a mm:ss string """
         minutes = seconds // 60
         seconds = seconds - (60 * minutes)
-        return '{0:02d}:{1:02d}'.format(minutes, seconds)
+        return f"{minutes:02d}:{seconds:02d}"
 
     def __init__(self, wins=0, total=0, best=0, worst=0):
-        '''
-        Constructor
-        '''
-        self.wins   = wins      # Number of wins
-        self.total  = total     # Total games
-        self.best   = best      # Best time (seconds)
-        self.worst  = worst     # Worst time (seconds)
+        """ Constructor """
+        self.wins = wins  # Number of wins
+        self.total = total  # Total games
+        self.best = best  # Best time (seconds)
+        self.worst = worst  # Worst time (seconds)
         self.losses = total - wins  # Number of losses
-        self.pct    = wins / total if total else 0
+        self.pct = wins / total if total else 0
 
     def __repr__(self):
         return "Statistics(wins={},total={},best={},worst={})".format(
@@ -38,45 +30,45 @@ class Statistics:
             self.worst)
 
     def __str__(self):
+        pct_wins = str(Statistics.percent(self.wins, self.losses) + 1) + "%"
+        pct_losses = str(Statistics.percent(self.wins, self.losses) - 1) + "%"
+        str_pct_wins = f"{pct_wins:<13}"
+        str_pct_losses = f"{pct_losses:<11}"
         lines = (
-        ('Total games          = {0}'.format(self.total)),
-        ('Wins                 = {0}'.format(self.wins)),
-        ('Losses               = {0}'.format(self.losses)),
-        ('Percentage           = {0:.0f}%'.format(self.pct * 100)),
-        ('Best time            = {0}'.format(Statistics.secondsToTime(self.best))),
-        ('Worst time           = {0}'.format(Statistics.secondsToTime(self.worst))),
-        ('Wins to {0:<13s}= {1}'.format(
-                        str(Statistics.percent(self.wins, self.losses) + 1) + '%',
-                        self.winsToNextHigher())),
-        ('Losses to {0:<11s}= {1}'.format(
-                        str(Statistics.percent(self.wins, self.losses) - 1) + '%',
-                        self.lossesToNextLower())),
+            f"Total games          = {self.total}",
+            f"Wins                 = {self.wins}",
+            f"Losses               = {self.losses}",
+            f"Percentage           = {self.pct * 100:.0f}%",
+            f"Best time            = {Statistics.seconds_to_time(self.best)}",
+            f"Worst time           = {Statistics.seconds_to_time(self.worst)}",
+            f"Wins to {str_pct_wins}= {self.wins_to_next_higher()}",
+            f"Losses to {str_pct_losses}= {self.losses_to_next_lower()}"
         )
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def winsToNextHigher(self):
-        if self.losses == 0:
+    def wins_to_next_higher(self):
+        if not self.losses:
             return None
         wins = self.wins
         losses = self.losses
         current = Statistics.percent(wins, losses)
-        nextPct = current + 1
+        next_pct = current + 1
         moves = 0
-        while current < nextPct:
+        while current < next_pct:
             moves += 1
             wins += 1
             current = Statistics.percent(wins, losses)
         return moves
 
-    def lossesToNextLower(self):
-        if self.wins == 0:
+    def losses_to_next_lower(self):
+        if not self.losses:
             return None
         wins = self.wins
         losses = self.losses
         current = Statistics.percent(wins, losses)
-        nextPct = current - 1
+        next_pct = current - 1
         moves = 0
-        while current > nextPct:
+        while current > next_pct:
             moves += 1
             losses += 1
             current = Statistics.percent(wins, losses)
