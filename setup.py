@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='freecellstats',
-    version='1.0.0',
-    packages=['tests', 'tests.testdata', 'freecell'],
+    version='1.0.1',
+    packages=['freecell'],
     url='https://github.com/philhanna/freecellstats',
     license='MIT',
     author='saspeh',
