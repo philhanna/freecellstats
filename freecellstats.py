@@ -19,7 +19,9 @@ def get_version():
 
 def main():
     fr = DataProvider()
-    print(str(fr.statistics))
+    frstat = fr.statistics
+    frstatstr = str(frstat)
+    print(frstatstr)
 
 
 if __name__ == '__main__':

@@ -92,18 +92,18 @@ class Statistics:
 
     def __str__(self) -> str:
         """Returns this object as a string"""
-        pct_wins = str(round(Statistics.percent(self.wins, self.losses)) + 1) + "%"
-        pct_losses = str(round(Statistics.percent(self.wins, self.losses)) - 1) + "%"
-        str_pct_wins = f"{pct_wins:<13}"
-        str_pct_losses = f"{pct_losses:<11}"
-        lines = (
-            f"Total games          = {self.total}",
-            f"Wins                 = {self.wins}",
-            f"Losses               = {self.losses}",
-            f"Percentage           = {self.pct * 100:.0f}%",
-            f"Best time            = {Statistics.seconds_to_time(self.best)}",
-            f"Worst time           = {Statistics.seconds_to_time(self.worst)}",
-            f"Wins to {str_pct_wins}= {self.wins_to_next_higher}",
-            f"Losses to {str_pct_losses}= {self.losses_to_next_lower}"
-        )
-        return "\n".join(lines)
+        current_pct = Statistics.percent(self.wins, self.losses)
+        data = {
+            "Total games": self.total,
+            "Wins": self.wins,
+            "Losses": self.losses,
+            "Percentage": f"{self.pct * 100:.0f}%",
+            "Best time": Statistics.seconds_to_time(self.best),
+            "Worst time": Statistics.seconds_to_time(self.worst),
+            f"Wins to {current_pct + 1}%": self.wins_to_next_higher,
+            f"Losses to {current_pct - 1}%": self.losses_to_next_lower,
+        }
+        maxlen = max([len(x) for x in data])
+        lines = [f"{k:<{maxlen}} = {v}" for k, v in data.items()]
+        result = "\n".join(lines)
+        return result
