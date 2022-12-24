@@ -9,7 +9,7 @@ class DataProvider:
 
     def __init__(self):
         """Creates a new DataProvider"""
-        statistic: str = self.get_statistic_string()
+        statistic: str = DataProvider.get_statistic_string()
         wins, total, best, worst = [int(x)
                                     for x in statistic.split(";")
                                     if x]
