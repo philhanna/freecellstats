@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='freecellstats',
-    version='1.3.0',
+    version='1.3.1',
     packages=['freecell'],
     url='https://github.com/philhanna/freecellstats',
     license='MIT',
