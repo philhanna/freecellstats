@@ -14,6 +14,7 @@ const (
 type DataProvider struct {
 }
 
+type ConfigStringGetter func() string
 
 func DefaultConfigGetter() string {
 	home, _ := os.UserHomeDir()
@@ -23,8 +24,14 @@ func DefaultConfigGetter() string {
 
 // Loads the configuration from the default input file. This method can
 // be replaced by a mock object in unit tests
-func GetStatisticString() string {
-	configFile := DefaultConfigGetter()
+func GetStatisticString(csgs ...ConfigStringGetter) string {
+	var csg func() string
+	if len(csgs) == 0 {
+		csg = DefaultConfigGetter
+	} else {
+		csg = csgs[0]
+	}
+	configFile := csg()
 	config := ini.Load(configFile)
 	section, _ := config.GetSection("freecell.scm")
 	statisticString, _ := section.GetValue("Statistic")
