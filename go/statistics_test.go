@@ -1,7 +1,10 @@
 package freecell
 
-import "testing"
-import "math"
+import (
+	// "fmt"
+	"math"
+	"testing"
+)
 
 func TestPercent(t *testing.T) {
 	type args struct {
@@ -21,5 +24,39 @@ func TestPercent(t *testing.T) {
 				t.Errorf("Percent() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestNewStatistics(t *testing.T) {
+	type args struct {
+		wins  int
+		total int
+		best  int
+		worst int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Statistics
+	}{
+		{"current", args{124, 153, 88, 363}, nil},
+	}
+	for _, tt := range tests {
+		want := Statistics{
+			wins:   124,
+			total:  153,
+			best:   88,
+			worst:  363,
+			losses: 29,
+			pct:    81,
+		}
+		have := *NewStatistics(tt.args.wins, tt.args.total, tt.args.best, tt.args.worst)
+
+		wantString := want.String()
+		haveString := have.String()
+
+		if wantString != haveString {
+			t.Errorf("%v: want=%v,have=%v", tt.name, wantString, haveString)
+		}
 	}
 }
