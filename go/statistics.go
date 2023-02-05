@@ -11,7 +11,7 @@ type Statistics struct {
 }
 
 // Constructor
-func NewStatistics(wins, total, best, worst int) *Statistics{
+func NewStatistics(wins, total, best, worst int) *Statistics {
 	stats := new(Statistics)
 	stats.wins = wins
 	stats.total = total
@@ -22,4 +22,12 @@ func NewStatistics(wins, total, best, worst int) *Statistics{
 		stats.pct = float64(wins) / float64(total)
 	}
 	return stats
+}
+
+// Finds the value of the winning percentage
+func Percent(wins int, losses int) float64 {
+	numer := float64(wins) * 100.0
+	denom := float64(wins + losses)
+	pct := numer / denom
+	return pct
 }
