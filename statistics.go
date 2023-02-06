@@ -5,6 +5,10 @@ import (
 	"math"
 )
 
+// -------------------------------------------------------------
+// Type definitions
+// -------------------------------------------------------------
+
 // Captures the wins, losses, and percentages
 type Statistics struct {
 	wins   int
@@ -15,7 +19,19 @@ type Statistics struct {
 	pct    float64
 }
 
-// Constructor
+// -------------------------------------------------------------
+// Constructors
+// -------------------------------------------------------------
+
+// Creates a new Statistics object from the basic integer values
+// that AisleRiot keeps:
+//  - wins
+//  - total
+//  - best
+//  - worst
+// It then calculates the other two values:
+//  - losses
+//  - percentage of wins
 func NewStatistics(wins, total, best, worst int) *Statistics {
 	stats := new(Statistics)
 	stats.wins = wins
@@ -29,12 +45,9 @@ func NewStatistics(wins, total, best, worst int) *Statistics {
 	return stats
 }
 
-// Returns a string representation of the structure
-func (stat Statistics) String() string {
-	sb := fmt.Sprintf("wins:%d, total:%d, best:%d, worst:%d, losses:%d, pct:%f.0",
-		stat.wins, stat.total, stat.best, stat.worst, stat.losses, stat.pct)
-	return sb
-}
+// -------------------------------------------------------------
+// Static functions
+// -------------------------------------------------------------
 
 // Finds the value of the winning percentage
 func Percent(wins int, losses int) float64 {
@@ -42,4 +55,15 @@ func Percent(wins int, losses int) float64 {
 	denom := float64(wins + losses)
 	pct := numer / denom
 	return pct
+}
+
+// -------------------------------------------------------------
+// Methods
+// -------------------------------------------------------------
+
+// Returns a string representation of the structure
+func (stat Statistics) String() string {
+	sb := fmt.Sprintf("wins:%d, total:%d, best:%d, worst:%d, losses:%d, pct:%f.0",
+		stat.wins, stat.total, stat.best, stat.worst, stat.losses, stat.pct)
+	return sb
 }
