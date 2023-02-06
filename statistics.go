@@ -3,6 +3,8 @@ package freecell
 import (
 	"fmt"
 	"math"
+	"strconv"
+	"strings"
 )
 
 // -------------------------------------------------------------
@@ -45,6 +47,18 @@ func NewStatistics(wins, total, best, worst int) *Statistics {
 	return stats
 }
 
+// Creates a new Statistics object from the string representation
+// that is in the configuration file, e.g., "99;150;144;208;"
+func NewStatisticsFromString(statString string) *Statistics {
+	tokens := strings.Split(statString, ";")[:4]
+	fmt.Printf("Number of tokens = %d\n", len(tokens))
+	wins, _ := strconv.Atoi(tokens[0])
+	total, _ := strconv.Atoi(tokens[1])
+	best, _ := strconv.Atoi(tokens[2])
+	worst, _ := strconv.Atoi(tokens[3])
+	return NewStatistics(wins, total, best, worst)
+}
+
 // -------------------------------------------------------------
 // Static functions
 // -------------------------------------------------------------
@@ -62,8 +76,26 @@ func Percent(wins int, losses int) float64 {
 // -------------------------------------------------------------
 
 // Returns a string representation of the structure
-func (stat Statistics) String() string {
+func (stat *Statistics) String() string {
 	sb := fmt.Sprintf("wins:%d, total:%d, best:%d, worst:%d, losses:%d, pct:%f.0",
 		stat.wins, stat.total, stat.best, stat.worst, stat.losses, stat.pct)
 	return sb
+}
+
+// Returns the number of wins needed to raise the winning percentage one point
+func (stat *Statistics) WinsToNextHigher() int {
+	if stat.losses == 0 {
+		return 0
+	}
+	wins := stat.wins
+	losses := stat.losses
+	current := math.Round(Percent(wins, losses))
+	next_pct := current + 1
+	moves := 0
+	for current < next_pct {
+		moves += 1
+		wins += 1
+		current = math.Round(Percent(wins, losses))
+	}
+	return moves
 }
