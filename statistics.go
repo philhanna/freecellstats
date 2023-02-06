@@ -71,6 +71,13 @@ func Percent(wins int, losses int) float64 {
 	return pct
 }
 
+// Converts a number of seconds into a mm:ss string
+func SecondsToTime(seconds int) string {
+	mm := int(seconds / 60)
+	ss := seconds % 60
+	return fmt.Sprintf("%02d:%02d", mm, ss)
+}
+
 // -------------------------------------------------------------
 // Methods
 // -------------------------------------------------------------

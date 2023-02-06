@@ -67,9 +67,9 @@ func TestPercent(t *testing.T) {
 
 func TestStatistics_WinsToNextHigher(t *testing.T) {
 	tests := []struct {
-		name   string
+		name       string
 		statString string
-		want   int
+		want       int
 	}{
 		{"Normal", "99;150;144;208;", 3},
 		{"No losses", "99;99;144;208;", 0},
@@ -81,16 +81,16 @@ func TestStatistics_WinsToNextHigher(t *testing.T) {
 			want := tt.want
 			if have != want {
 				t.Errorf("have=%d,want=%d", have, want)
-			}	
+			}
 		})
 	}
 }
 
 func TestStatistics_LossesToNextLower(t *testing.T) {
 	tests := []struct {
-		name   string
+		name       string
 		statString string
-		want   int
+		want       int
 	}{
 		{"Normal", "99;150;144;208;", 2},
 		{"No losses", "99;99;144;208;", 0},
@@ -102,7 +102,27 @@ func TestStatistics_LossesToNextLower(t *testing.T) {
 			want := tt.want
 			if have != want {
 				t.Errorf("have=%d,want=%d", have, want)
-			}	
+			}
+		})
+	}
+}
+
+func TestSecondsToTime(t *testing.T) {
+	tests := []struct {
+		name    string
+		seconds int
+		want    string
+	}{
+		{"Normal", 97, "01:37"},
+		{"Zero", 0, "00:00"},
+		{"Negative", -1, "00:-1"},
+		{"BigNumber", 3600, "60:00"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SecondsToTime(tt.seconds); got != tt.want {
+				t.Errorf("SecondsToTime() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
