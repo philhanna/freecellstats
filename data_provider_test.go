@@ -1,6 +1,14 @@
 package freecell
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+func TestGetStatisticsStringReal(t *testing.T) {
+	have, _ := GetStatisticString()
+	fmt.Printf("have=%v\n", have)
+}
 
 func TestGetStatisticString(t *testing.T) {
 	tests := []struct {
