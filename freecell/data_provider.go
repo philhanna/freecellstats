@@ -11,9 +11,6 @@ const (
 	CONFIG_FILE_NAME = ".config/gnome-games/aisleriot"
 )
 
-type DataProvider struct {
-}
-
 // A ConfigFileProvider is a function returning either:
 //  1. A file name (such as the actual configuration file)
 //  2. A string containing the contents of a configuration file

@@ -1,6 +1,7 @@
 package freecell
 
 import (
+	"fmt"
 	"math"
 	"testing"
 )
@@ -124,5 +125,13 @@ func TestSecondsToTime(t *testing.T) {
 				t.Errorf("SecondsToTime() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestStringLines(t *testing.T) {
+	p := getTestData()
+	ss := p.StringLines()
+	for _, s := range ss {
+		fmt.Println(s)
 	}
 }

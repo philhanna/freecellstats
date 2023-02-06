@@ -51,7 +51,6 @@ func NewStatistics(wins, total, best, worst int) *Statistics {
 // that is in the configuration file, e.g., "99;150;144;208;"
 func NewStatisticsFromString(statString string) *Statistics {
 	tokens := strings.Split(statString, ";")[:4]
-	fmt.Printf("Number of tokens = %d\n", len(tokens))
 	wins, _ := strconv.Atoi(tokens[0])
 	total, _ := strconv.Atoi(tokens[1])
 	best, _ := strconv.Atoi(tokens[2])
@@ -87,6 +86,22 @@ func (stat *Statistics) String() string {
 	sb := fmt.Sprintf("wins:%d, total:%d, best:%d, worst:%d, losses:%d, pct:%f.0",
 		stat.wins, stat.total, stat.best, stat.worst, stat.losses, stat.pct)
 	return sb
+}
+
+// Returns an array of strings representing this structure
+func (stat *Statistics) StringLines() []string {
+	currentPct := int(Percent(stat.wins, stat.losses))
+	data := []string {
+		fmt.Sprintf("Total games      = %d", stat.total),
+		fmt.Sprintf("Wins             = %d", stat.wins),
+		fmt.Sprintf("Losses           = %d", stat.losses),
+		fmt.Sprintf("Percentage       = %.f%%", stat.pct),
+		fmt.Sprintf("Best time        = %s", SecondsToTime(stat.best)),
+		fmt.Sprintf("Worst time       = %s", SecondsToTime(stat.worst)),
+		fmt.Sprintf("Wins to %d%%      = %d", currentPct + 1, stat.WinsToNextHigher()),
+		fmt.Sprintf("Losses to %d%%    = %d", currentPct - 1, stat.LossesToNextLower()),
+	}
+	return data
 }
 
 // Returns the number of wins needed to raise the winning percentage one point
