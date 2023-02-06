@@ -65,7 +65,7 @@ class Statistics:
 
     @property
     def losses_to_next_lower(self) -> int | None:
-        """Returns the number of losses needed to raise
+        """Returns the number of losses needed to lower
         the winning percentage one point"""
         if not self.losses:
             return None
