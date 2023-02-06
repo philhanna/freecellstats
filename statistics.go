@@ -75,24 +75,6 @@ func Percent(wins int, losses int) float64 {
 // Methods
 // -------------------------------------------------------------
 
-// Returns the number of losses needed to lower the winning percentage one point
-func (stat *Statistics) LossesToNextLower() int {
-	if stat.losses == 0 {
-		return 0
-	}
-	wins := stat.wins
-	losses := stat.losses
-	current := math.Round(Percent(wins, losses))
-	next_pct := current - 1
-	moves := 0
-	for current > next_pct {
-		moves += 1
-		losses += 1
-		current = math.Round(Percent(wins, losses))
-	}
-	return moves
-}
-
 // Returns a string representation of the structure
 func (stat *Statistics) String() string {
 	sb := fmt.Sprintf("wins:%d, total:%d, best:%d, worst:%d, losses:%d, pct:%f.0",
@@ -113,6 +95,24 @@ func (stat *Statistics) WinsToNextHigher() int {
 	for current < next_pct {
 		moves += 1
 		wins += 1
+		current = math.Round(Percent(wins, losses))
+	}
+	return moves
+}
+
+// Returns the number of losses needed to lower the winning percentage one point
+func (stat *Statistics) LossesToNextLower() int {
+	if stat.losses == 0 {
+		return 0
+	}
+	wins := stat.wins
+	losses := stat.losses
+	current := math.Round(Percent(wins, losses))
+	next_pct := current - 1
+	moves := 0
+	for current > next_pct {
+		moves += 1
+		losses += 1
 		current = math.Round(Percent(wins, losses))
 	}
 	return moves
