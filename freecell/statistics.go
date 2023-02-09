@@ -90,7 +90,7 @@ func (stat *Statistics) String() string {
 
 // Returns an array of strings representing this structure
 func (stat *Statistics) StringLines() []string {
-	currentPct := int(Percent(stat.wins, stat.losses))
+	currentPct := Percent(stat.wins, stat.losses)
 	data := []string {
 		fmt.Sprintf("Total games      = %d", stat.total),
 		fmt.Sprintf("Wins             = %d", stat.wins),
@@ -98,8 +98,8 @@ func (stat *Statistics) StringLines() []string {
 		fmt.Sprintf("Percentage       = %.f%%", stat.pct),
 		fmt.Sprintf("Best time        = %s", SecondsToTime(stat.best)),
 		fmt.Sprintf("Worst time       = %s", SecondsToTime(stat.worst)),
-		fmt.Sprintf("Wins to %d%%      = %d", currentPct + 1, stat.WinsToNextHigher()),
-		fmt.Sprintf("Losses to %d%%    = %d", currentPct - 1, stat.LossesToNextLower()),
+		fmt.Sprintf("Wins to %.f%%      = %d", currentPct + 1, stat.WinsToNextHigher()),
+		fmt.Sprintf("Losses to %.f%%    = %d", currentPct - 1, stat.LossesToNextLower()),
 	}
 	return data
 }
