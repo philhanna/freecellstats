@@ -90,18 +90,36 @@ func (stat *Statistics) String() string {
 
 // Returns an array of strings representing this structure
 func (stat *Statistics) StringLines() []string {
-	currentPct := Percent(stat.wins, stat.losses)
 	data := []string {
 		fmt.Sprintf("Total games      = %d", stat.total),
 		fmt.Sprintf("Wins             = %d", stat.wins),
 		fmt.Sprintf("Losses           = %d", stat.losses),
-		fmt.Sprintf("Percentage       = %.f%%", stat.pct),
+		fmt.Sprintf("Percentage       = %d%%", stat.CurrentPct()),
 		fmt.Sprintf("Best time        = %s", SecondsToTime(stat.best)),
 		fmt.Sprintf("Worst time       = %s", SecondsToTime(stat.worst)),
-		fmt.Sprintf("Wins to %.f%%      = %d", currentPct + 1, stat.WinsToNextHigher()),
-		fmt.Sprintf("Losses to %.f%%    = %d", currentPct - 1, stat.LossesToNextLower()),
+		fmt.Sprintf("Wins to %d%%      = %d", stat.NextHigher(), stat.WinsToNextHigher()),
+		fmt.Sprintf("Losses to %d%%    = %d", stat.NextLower(), stat.LossesToNextLower()),
 	}
 	return data
+}
+
+// Returns the current win percentage (rounded to an int)
+func (stat *Statistics) CurrentPct() int {
+	return int(math.Round(Percent(stat.wins, stat.losses)))
+}
+
+// Returns the next higher percentage (rounded to an int)
+func (stat *Statistics) NextHigher() int {
+	currentPct := stat.CurrentPct()
+	nextHigher := currentPct + 1
+	return nextHigher
+}
+
+// Returns the next lower percentage (rounded to an int)
+func (stat *Statistics) NextLower() int {
+	currentPct := stat.CurrentPct()
+	nextLower := currentPct - 1
+	return nextLower
 }
 
 // Returns the number of wins needed to raise the winning percentage one point

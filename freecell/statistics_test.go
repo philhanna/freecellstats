@@ -66,6 +66,63 @@ func TestPercent(t *testing.T) {
 	}
 }
 
+func TestStatistics_CurrentPct(t *testing.T) {
+	tests := []struct {
+		name string
+		stat *Statistics
+		want int
+	}{
+		{"easy", NewStatisticsFromString("99;150;144;208;"), 66},
+		{"borderline", NewStatisticsFromString("128;157;88;363;"), 82},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stat := tt.stat
+			if got := stat.CurrentPct(); got != tt.want {
+				t.Errorf("Statistics.CurrentPct() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStatistics_NextHigher(t *testing.T) {
+	tests := []struct {
+		name   string
+		stat *Statistics
+		want   int
+	}{
+		{"easy", NewStatisticsFromString("99;150;144;208;"), 67},
+		{"borderline", NewStatisticsFromString("128;157;88;363;"), 83},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stat := tt.stat
+			if got := stat.NextHigher(); got != tt.want {
+				t.Errorf("Statistics.NextHigher() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStatistics_NextLower(t *testing.T) {
+	tests := []struct {
+		name   string
+		stat *Statistics
+		want   int
+	}{
+		{"easy", NewStatisticsFromString("99;150;144;208;"), 65},
+		{"borderline", NewStatisticsFromString("128;157;88;363;"), 81},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stat := tt.stat
+			if got := stat.NextLower(); got != tt.want {
+				t.Errorf("Statistics.NextHigher() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestStatistics_WinsToNextHigher(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -74,6 +131,7 @@ func TestStatistics_WinsToNextHigher(t *testing.T) {
 	}{
 		{"Normal", "99;150;144;208;", 3},
 		{"No losses", "99;99;144;208;", 0},
+		{"Borderline", "128;157;88;363;", 9},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -95,6 +153,7 @@ func TestStatistics_LossesToNextLower(t *testing.T) {
 	}{
 		{"Normal", "99;150;144;208;", 2},
 		{"No losses", "99;99;144;208;", 0},
+		{"Borderline", "128;157;88;363;", 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
