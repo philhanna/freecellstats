@@ -27,13 +27,14 @@ type Statistics struct {
 
 // Creates a new Statistics object from the basic integer values
 // that AisleRiot keeps:
-//  - wins
-//  - total
-//  - best
-//  - worst
+//   - wins
+//   - total
+//   - best
+//   - worst
+//
 // It then calculates the other two values:
-//  - losses
-//  - percentage of wins
+//   - losses
+//   - percentage of wins
 func NewStatistics(wins, total, best, worst int) *Statistics {
 	stats := new(Statistics)
 	stats.wins = wins
@@ -90,7 +91,7 @@ func (stat *Statistics) String() string {
 
 // Returns an array of strings representing this structure
 func (stat *Statistics) StringLines() []string {
-	data := []string {
+	data := []string{
 		fmt.Sprintf("Total games      = %d", stat.total),
 		fmt.Sprintf("Wins             = %d", stat.wins),
 		fmt.Sprintf("Losses           = %d", stat.losses),

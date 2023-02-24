@@ -11,13 +11,13 @@ const (
 	CONFIG_FILE_NAME = ".config/gnome-games/aisleriot"
 )
 
-
 // Loads the configuration from the default input file. This method can
 // be replaced by a mock object in unit tests
 //
 // A configuration file provider is a function returning either:
 //  1. A file name (such as the actual configuration file)
 //  2. A string containing the contents of a configuration file
+//
 // The go-ini package will accept either one.
 //
 // The default configuration file provider gets the name of

@@ -87,9 +87,9 @@ func TestStatistics_CurrentPct(t *testing.T) {
 
 func TestStatistics_NextHigher(t *testing.T) {
 	tests := []struct {
-		name   string
+		name string
 		stat *Statistics
-		want   int
+		want int
 	}{
 		{"easy", NewStatisticsFromString("99;150;144;208;"), 67},
 		{"borderline", NewStatisticsFromString("128;157;88;363;"), 83},
@@ -106,9 +106,9 @@ func TestStatistics_NextHigher(t *testing.T) {
 
 func TestStatistics_NextLower(t *testing.T) {
 	tests := []struct {
-		name   string
+		name string
 		stat *Statistics
-		want   int
+		want int
 	}{
 		{"easy", NewStatisticsFromString("99;150;144;208;"), 65},
 		{"borderline", NewStatisticsFromString("128;157;88;363;"), 81},
